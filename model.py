@@ -1,3 +1,8 @@
+# Copyright (c) 2026 [Leung]
+# This code is provided for review purposes and will be finalized upon publication.
+# Redistribution and use in source and binary forms, with or without modification,
+# are permitted provided that the original work is properly cited.
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
