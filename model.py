@@ -14,42 +14,42 @@ from collections import Counter
 import pandas as pd
 
 
-class DepthwiseSeparableGCNConv(MessagePassing):
-    def __init__(self, in_channels, out_channels):
-        super(DepthwiseSeparableGCNConv, self).__init__(aggr='add')  # "Add" aggregation.
+# class DepthwiseSeparableGCNConv(MessagePassing):
+#     def __init__(self, in_channels, out_channels):
+#         super(DepthwiseSeparableGCNConv, self).__init__(aggr='add')  # "Add" aggregation.
 
-        self.depthwise = nn.Linear(in_channels, in_channels)
+#         self.depthwise = nn.Linear(in_channels, in_channels)
 
-        self.pointwise = nn.Linear(in_channels, out_channels)
+#         self.pointwise = nn.Linear(in_channels, out_channels)
 
-        self.reset_parameters()
+#         self.reset_parameters()
 
-    def reset_parameters(self):
-        nn.init.xavier_uniform_(self.depthwise.weight)
-        nn.init.zeros_(self.depthwise.bias)
-        nn.init.xavier_uniform_(self.pointwise.weight)
-        nn.init.zeros_(self.pointwise.bias)
+#     def reset_parameters(self):
+#         nn.init.xavier_uniform_(self.depthwise.weight)
+#         nn.init.zeros_(self.depthwise.bias)
+#         nn.init.xavier_uniform_(self.pointwise.weight)
+#         nn.init.zeros_(self.pointwise.bias)
 
-    def forward(self, x, edge_index):
-        edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))
+#     def forward(self, x, edge_index):
+#         edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))
 
-        row, col = edge_index
-        deg = degree(row, x.size(0), dtype=x.dtype)
-        deg_inv_sqrt = deg.pow(-0.5)
-        norm = deg_inv_sqrt[row] * deg_inv_sqrt[col]
+#         row, col = edge_index
+#         deg = degree(row, x.size(0), dtype=x.dtype)
+#         deg_inv_sqrt = deg.pow(-0.5)
+#         norm = deg_inv_sqrt[row] * deg_inv_sqrt[col]
 
-        x = self.depthwise(x)
+#         x = self.depthwise(x)
 
-        x = self.propagate(edge_index, x=x, norm=norm)
+#         x = self.propagate(edge_index, x=x, norm=norm)
 
-        x = self.pointwise(x)
+#         x = self.pointwise(x)
 
-        return x
+#         return x
 
-    def message(self, x_j, norm):
-        # x_j has shape [E, out_channels]
-        # Normalize node features.
-        return norm.view(-1, 1) * x_j
+#     def message(self, x_j, norm):
+#         # x_j has shape [E, out_channels]
+#         # Normalize node features.
+#         return norm.view(-1, 1) * x_j
 
 
 class StructuralSelfAttentionPooling(nn.Module):
